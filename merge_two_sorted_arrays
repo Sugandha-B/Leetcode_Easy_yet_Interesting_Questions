@@ -1,0 +1,59 @@
+class Solution {
+    
+    private int nextGap(int gap) {
+        if (gap <= 1) return 0;
+        return (gap / 2) + (gap % 2);
+    }
+    
+    private void swapIfGreater(int[] nums1, int[] nums2, int i, int j) {
+        if (nums1[i] > nums2[j]) {
+            int temp = nums1[i];
+            nums1[i] = nums2[j];
+            nums2[j] = temp;
+        }
+    }
+    
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        
+        int gap = nextGap(m + n);
+        
+        while (gap > 0) {
+            int left = 0;
+            int right = left + gap;
+            
+            while (right < m + n) {
+                
+                // both pointers in nums1
+                if (left < m && right < m) {
+                    if (nums1[left] > nums1[right]) {
+                        int temp = nums1[left];
+                        nums1[left] = nums1[right];
+                        nums1[right] = temp;
+                    }
+                }
+                // left in nums1, right in nums2
+                else if (left < m && right >= m) {
+                    swapIfGreater(nums1, nums2, left, right - m);
+                }
+                // both pointers in nums2
+                else {
+                    if (nums2[left - m] > nums2[right - m]) {
+                        int temp = nums2[left - m];
+                        nums2[left - m] = nums2[right - m];
+                        nums2[right - m] = temp;
+                    }
+                }
+                
+                left++;
+                right++;
+            }
+            
+            gap = nextGap(gap);
+        }
+        
+        // Copy sorted nums2 into remaining positions of nums1
+        for (int i = 0; i < n; i++) {
+            nums1[m + i] = nums2[i];
+        }
+    }
+}
